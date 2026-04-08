@@ -80,13 +80,13 @@ export default function ExpenseList({
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <Input
                 placeholder="Search title or notes…"
-                defaultValue={filters.search || ""}
+                defaultValue={filters?.search || ""}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="pl-9"
               />
             </div>
             <Select
-              defaultValue={filters.category || "All"}
+              defaultValue={filters?.category || "All"}
               onValueChange={handleCategory}
             >
               <SelectTrigger className="w-full sm:w-48">
@@ -118,7 +118,7 @@ export default function ExpenseList({
                 No expenses found
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                {filters.search || filters.category
+                {filters?.search || filters?.category
                   ? "Try adjusting your filters."
                   : 'Click "Add Expense" to get started.'}
               </p>
@@ -150,14 +150,14 @@ export default function ExpenseList({
                   <tbody className="divide-y">
                     {expenses.map((exp) => (
                       <tr
-                        key={exp.id}
+                        key={exp?._id}
                         className="hover:bg-muted/20 transition-colors group"
                       >
                         <td className="px-4 py-3 text-sm text-muted-foreground whitespace-nowrap">
-                          {format(new Date(exp.date), "MMM d, yyyy")}
+                          {format(new Date(exp?.date), "MMM d, yyyy")}
                         </td>
                         <td className="px-4 py-3 text-sm font-medium max-w-[180px] truncate">
-                          {exp.title}
+                          {exp?.title}
                         </td>
                         <td className="px-4 py-3">
                           <span
@@ -166,14 +166,14 @@ export default function ExpenseList({
                               "bg-gray-100 text-gray-700"
                             }`}
                           >
-                            {exp.category}
+                            {exp?.category}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-sm font-semibold text-right tabular-nums whitespace-nowrap">
-                          {fmt(exp.amount)}
+                          {fmt(exp?.amount)}
                         </td>
                         <td className="px-4 py-3 text-sm text-muted-foreground hidden md:table-cell max-w-[200px] truncate">
-                          {exp.description || (
+                          {exp?.description || (
                             <span className="opacity-30">—</span>
                           )}
                         </td>
