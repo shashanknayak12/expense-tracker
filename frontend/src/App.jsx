@@ -51,7 +51,7 @@ export default function App() {
 
   const handleSave = async (data) => {
     if (editing) {
-      await api.updateExpense(editing.id, data);
+      await api.updateExpense(editing?._id, data);
     } else {
       await api.createExpense(data);
     }
@@ -65,8 +65,8 @@ export default function App() {
     setDialogOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    await api.deleteExpense(id);
+  const handleDelete = async ({ _id }) => {
+    await api.deleteExpense(_id);
     refresh();
   };
 
