@@ -69,7 +69,7 @@ export default function ExpenseList({
   }
 
   const total = expenses.reduce((s, e) => s + e.amount, 0);
-
+  console.log(pendingDelete, "asdasd");
   return (
     <>
       {/* Filter bar */}
@@ -191,7 +191,7 @@ export default function ExpenseList({
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                              onClick={() => setPendingDelete(exp.id)}
+                              onClick={() => setPendingDelete(exp)}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </Button>
