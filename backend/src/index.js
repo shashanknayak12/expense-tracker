@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import expensesRouter from "./routes/expenses.js";
 import authRouter from "./routes/auth.js";
+import adminRouter from "./routes/admin.js";
 import { protect } from "./middleware/auth.js";
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/expenses", protect, expensesRouter);
+app.use("/api/admin", protect, adminRouter);
 
 mongoose
   .connect(process.env.DATABASE_URL)

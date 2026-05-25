@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
+import { UserActivity } from "../models/UserActivity.js";
 
 const router = express.Router();
 
@@ -31,6 +32,7 @@ router.post("/register", async (req, res) => {
     const user = await User.create({ name, email, password: hashed });
 
     const token = signToken(user);
+    await UserActivity.create({ userId: user._id, action: "register", details: "Account created" });
     res.status(201).json({
       token,
       user: { id: user._id, name: user.name, email: user.email, role: user.role },
@@ -57,6 +59,7 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
 
     const token = signToken(user);
+    await UserActivity.create({ userId: user._id, action: "login", details: "User logged in" });
     res.json({
       token,
       user: { id: user._id, name: user.name, email: user.email, role: user.role },

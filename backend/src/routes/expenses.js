@@ -1,5 +1,6 @@
 import express from 'express'
 import { Expense } from '../models/Expense.js'
+import { UserActivity } from '../models/UserActivity.js'
 
 const router = express.Router()
 
@@ -65,6 +66,7 @@ router.post('/', async (req, res) => {
       date: new Date(date),
       description: description || null,
     })
+    await UserActivity.create({ userId: req.user.id, action: "create_expense", details: `Created expense: ${title}` })
     res.status(201).json(expense)
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -87,6 +89,7 @@ router.put('/:id', async (req, res) => {
       { new: true, runValidators: true }
     )
     if (!expense) return res.status(404).json({ error: 'Expense not found' })
+    await UserActivity.create({ userId: req.user.id, action: "update_expense", details: `Updated expense: ${expense.title}` })
     res.json(expense)
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -98,6 +101,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const expense = await Expense.findByIdAndDelete(req.params.id)
     if (!expense) return res.status(404).json({ error: 'Expense not found' })
+    await UserActivity.create({ userId: req.user.id, action: "delete_expense", details: `Deleted expense: ${expense.title}` })
     res.json({ success: true })
   } catch (err) {
     res.status(500).json({ error: err.message })
