@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 import { UserActivity } from "../models/UserActivity.js";
+import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -64,6 +65,16 @@ router.post("/login", async (req, res) => {
       token,
       user: { id: user._id, name: user.name, email: user.email, role: user.role },
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/auth/logout
+router.post("/logout", protect, async (req, res) => {
+  try {
+    await UserActivity.create({ userId: req.user.id, action: "logout", details: "User logged out" });
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

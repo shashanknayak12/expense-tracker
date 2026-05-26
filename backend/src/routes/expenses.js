@@ -5,9 +5,9 @@ import { UserActivity } from '../models/UserActivity.js'
 const router = express.Router()
 
 // GET /api/expenses/summary — before /:id
-router.get('/summary', async (_req, res) => {
+router.get('/summary', async (req, res) => {
   try {
-    const expenses = await Expense.find().lean()
+    const expenses = await Expense.find({ userId: req.user.id }).lean()
 
     const total = expenses.reduce((s, e) => s + e.amount, 0)
 
@@ -38,7 +38,7 @@ router.get('/summary', async (_req, res) => {
 router.get('/', async (req, res) => {
   try {
     const { category, search } = req.query
-    const filter = {}
+    const filter = { userId: req.user.id }
 
     if (category) filter.category = category
     if (search) {
@@ -60,6 +60,7 @@ router.post('/', async (req, res) => {
   try {
     const { title, category, amount, date, description } = req.body
     const expense = await Expense.create({
+      userId: req.user.id,
       title,
       category,
       amount: parseFloat(amount),
@@ -77,8 +78,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { title, category, amount, date, description } = req.body
-    const expense = await Expense.findByIdAndUpdate(
-      req.params.id,
+    const expense = await Expense.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.id },
       {
         title,
         category,
@@ -99,7 +100,7 @@ router.put('/:id', async (req, res) => {
 // DELETE /api/expenses/:id
 router.delete('/:id', async (req, res) => {
   try {
-    const expense = await Expense.findByIdAndDelete(req.params.id)
+    const expense = await Expense.findOneAndDelete({ _id: req.params.id, userId: req.user.id })
     if (!expense) return res.status(404).json({ error: 'Expense not found' })
     await UserActivity.create({ userId: req.user.id, action: "delete_expense", details: `Deleted expense: ${expense.title}` })
     res.json({ success: true })

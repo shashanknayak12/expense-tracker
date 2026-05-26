@@ -69,7 +69,6 @@ export default function ExpenseList({
   }
 
   const total = expenses.reduce((s, e) => s + e.amount, 0);
-  console.log(pendingDelete, "asdasd");
   return (
     <>
       {/* Filter bar */}

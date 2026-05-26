@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { PlusCircle, TrendingUp, List } from "lucide-react";
+import { PlusCircle, TrendingUp, List, LogOut, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api } from "@/lib/api";
@@ -8,14 +8,28 @@ import ExpenseDialog from "@/components/ExpenseDialog";
 import ExpenseList from "@/components/ExpenseList";
 import MonthlyTrends from "@/components/MonthlyTrends";
 import CategoryBreakdown from "@/components/CategoryBreakdown";
+import AuthPage from "@/components/AuthPage";
+import AdminPanel from "@/components/AdminPanel";
 
 export default function App() {
+  const [user, setUser] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("user")); } catch { return null; }
+  });
   const [expenses, setExpenses] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({});
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+
+  const handleAuth = (loggedInUser) => setUser(loggedInUser);
+
+  const handleLogout = async () => {
+    await api.logout().catch(() => {});
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+  };
 
   const refresh = useCallback(
     async (activeFilters = filters) => {
@@ -75,6 +89,8 @@ export default function App() {
     setEditing(null);
   };
 
+  if (!user) return <AuthPage onAuth={handleAuth} />;
+
   return (
     <div className="min-h-screen bg-gray-50/60">
       {/* Header */}
@@ -90,10 +106,18 @@ export default function App() {
               Expense Tracker
             </span>
           </div>
-          <Button size="sm" onClick={() => setDialogOpen(true)}>
-            <PlusCircle className="w-4 h-4" />
-            Add Expense
-          </Button>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground hidden sm:block">
+              Hi, {user.name}
+            </span>
+            <Button size="sm" onClick={() => setDialogOpen(true)}>
+              <PlusCircle className="w-4 h-4" />
+              Add Expense
+            </Button>
+            <Button size="sm" variant="ghost" onClick={handleLogout} title="Logout">
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -111,6 +135,12 @@ export default function App() {
               <List className="w-4 h-4" />
               All Expenses
             </TabsTrigger>
+            {user.role === "admin" && (
+              <TabsTrigger value="admin" className="gap-1.5">
+                <ShieldCheck className="w-4 h-4" />
+                Admin
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="overview">
@@ -130,6 +160,12 @@ export default function App() {
               onDelete={handleDelete}
             />
           </TabsContent>
+
+          {user.role === "admin" && (
+            <TabsContent value="admin">
+              <AdminPanel />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
 
