@@ -63,7 +63,11 @@ expense-tracker/
 
 ## Database Export
 
-`expense-tracker.expenses.csv` in the root folder contains the expenses collection export.
+The following CSV files in the root folder contain the database exports:
+
+- `expense-tracker.expenses.csv` — expenses collection
+- `expense-tracker.users.csv` — users collection
+- `expense-tracker.useractivities.csv` — user activity logs collection
 
 ## Workload Allocation
 
