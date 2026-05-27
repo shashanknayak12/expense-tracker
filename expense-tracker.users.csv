@@ -1,0 +1,4 @@
+_id,name,email,password,role,createdAt,updatedAt,__v
+6a145beadd77221362b99694,Shashank,nayak@gmail.com,$2b$10$3yvo3HBG7jKmmMjyQcMeXeRRqAMhJYfKiuXDFBbNMTvDiGItt2X8m,admin,2026-05-25T14:25:46.428Z,2026-05-25T14:25:46.428Z,0
+6a145cc4dd77221362b996a3,nayak,nayak1@gmail.com,$2b$10$DnIGmXvbwcqjnTsHuHsVZuNV.JlXcZjvC4xirVDx0/F6zQAgWHioG,user,2026-05-25T14:29:24.936Z,2026-05-25T14:29:24.936Z,0
+6a15ad21d98fe945908d2885,admin,admin@gmail.com,$2b$10$xI3C2sl7WVYAxnxgmcWnn.cSuyj0D9Qiyj3AUN6rjf8UK/LPkUpnO,admin,2026-05-26T14:24:33.600Z,2026-05-26T14:24:33.600Z,0
