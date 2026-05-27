@@ -28,6 +28,8 @@ export default function App() {
     await api.logout().catch(() => {});
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    setExpenses([]);
+    setSummary(null);
     setUser(null);
   };
 
@@ -50,8 +52,8 @@ export default function App() {
   );
 
   useEffect(() => {
-    refresh();
-  }, []); // initial load
+    if (user) refresh();
+  }, [user]);
 
   const handleFiltersChange = (next) => {
     setFilters(next);
