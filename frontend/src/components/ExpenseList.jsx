@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { Search, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { CATEGORIES } from "@/components/ExpenseDialog";
+import { useDebounce } from "@/lib/utils";
 
 const CATEGORY_STYLE = {
   "Food & Dining": "bg-orange-100 text-orange-700",
@@ -52,10 +53,12 @@ export default function ExpenseList({
   onDelete,
 }) {
   const [pendingDelete, setPendingDelete] = useState(null);
+  const [searchInput, setSearchInput] = useState(filters?.search || "");
+  const debouncedSearch = useDebounce(searchInput, 400);
 
-  function handleSearch(val) {
-    onFiltersChange({ ...filters, search: val || undefined });
-  }
+  useEffect(() => {
+    onFiltersChange({ ...filters, search: debouncedSearch || undefined });
+  }, [debouncedSearch]);
 
   function handleCategory(val) {
     onFiltersChange({ ...filters, category: val === "All" ? undefined : val });
@@ -79,8 +82,8 @@ export default function ExpenseList({
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <Input
                 placeholder="Search title or notes…"
-                defaultValue={filters?.search || ""}
-                onChange={(e) => handleSearch(e.target.value)}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
                 className="pl-9"
               />
             </div>
